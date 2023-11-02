@@ -15,7 +15,25 @@ const router = createRouter({
     },
     {
       path: '/main',
-      component: () => import('../views/main/main.vue')
+      component: () => import('../views/main/main.vue'),
+      children: [
+        {
+          path: '/main/analysis/overview',
+          component: () => import('../views/main/analysis/overview/overview.vue')
+        },
+        {
+          path: '/main/analysis/dashboard',
+          component: () => import('../views/main/analysis/dashboard/dashboard.vue')
+        },
+        {
+          path: '/main/system/role',
+          component: () => import('../views/main/system/role/role.vue')
+        },
+        {
+          path: '/main/system/user',
+          component: () => import('../views/main/system/user/user.vue')
+        }
+      ]
     },
     {
       path: '/:pathMatch(.*)',
@@ -32,7 +50,7 @@ router.beforeEach((to, from) => {
   const token = localCache.getCache(LOGIN_TOKEN)
 
   // 如果去往main页面，同时没有登录，就重定向到login页面
-  if (to.path === '/main') {
+  if (to.path !== '/login') {
     // 只要登录成功才能进入到main页面,token有值
     // 如果token没有值，说明没有登录，跳转到登录页面
     if (!token) return '/login'

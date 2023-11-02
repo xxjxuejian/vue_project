@@ -1,19 +1,17 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import useLoginStore from '@/store/login/login'
-import { useRouter } from 'vue-router'
-import { LOGIN_TOKEN } from '@/global/constant'
-import { localCache } from '@/utils/cache'
 import mainAside from '@/components/main-aside/mainAside.vue'
 import mainHeader from '@/components/main-header/mainHeader.vue'
 
 const loginStore = useLoginStore()
-const router = useRouter()
-// 退出登录的按钮事件
-function quitLogin() {
-  // 1.删除token
-  localCache.removeCache(LOGIN_TOKEN)
-  // 2.跳转到login页面
-  router.push('/login')
+
+// 折叠相关操作
+const isFold = ref(false)
+function handleFoldChange(flag: boolean) {
+  // 1.mainAside组件中的属性collapse属性改变
+  isFold.value = flag
+  // 2. el-aside的宽度改变
 }
 </script>
 
@@ -21,16 +19,22 @@ function quitLogin() {
   <div class="main">
     <div class="common-layout">
       <el-container>
-        <el-aside width="200px">
-          <mainAside></mainAside>
+        <!-- 侧边栏 -->
+        <el-aside :width="isFold ? '60px' : '210px'">
+          <!-- <el-aside width="210px"> -->
+          <mainAside :is-flod="isFold"></mainAside>
         </el-aside>
+
         <el-container>
+          <!-- 容器中的顶部 -->
           <el-header>
-            <mainHeader></mainHeader>
+            <mainHeader @fold-change="handleFoldChange"> </mainHeader>
           </el-header>
+
+          <!-- 内容区域 -->
           <el-main>
             <h2>欢迎用户{{ loginStore.name }}</h2>
-            <button @click="quitLogin">退出登录</button>
+            <RouterView></RouterView>
           </el-main>
         </el-container>
       </el-container>
@@ -50,6 +54,7 @@ function quitLogin() {
       }
     }
     .el-aside {
+      transition: width 0.3s ease-out;
     }
 
     .el-main {
