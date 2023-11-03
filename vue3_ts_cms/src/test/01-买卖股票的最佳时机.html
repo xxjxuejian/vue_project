@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      const MaxProfit = function (prices) {
+        // 假设第i天卖出股票，只需要在前i天中的价格最低的那一天买入
+        let minPrice = Infinity
+        let maxProfit = -Infinity
+        for (let i = 0; i < prices.length; i++) {
+          minPrice = minPrice > prices[i] ? prices[i] : minPrice
+          maxProfit = maxProfit < prices[i] - minPrice ? prices[i] - minPrice : maxProfit
+        }
+
+        return maxProfit
+      }
+
+      const res = MaxProfit([7, 6, 4, 3, 1])
+      console.log(res)
+    </script>
+  </body>
+</html>

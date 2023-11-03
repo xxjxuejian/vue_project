@@ -47,10 +47,31 @@ const useLoginStore = defineStore('login', {
         // 角色id
         const roleId = this.userInfo.role.id
         const userMenus = await getUserMenusByRoleId(roleId)
-        console.log(userMenus, '====')
         this.userMenus = userMenus.data
         localCache.setCache('userMenus', this.userMenus)
-        console.log(this.userMenus, '---------')
+        console.log('用户菜单树', this.userMenus)
+
+        // 根据用户菜单树信息，动态的注册路由
+        // 1.获取所有的注册好的路由信息
+        const mainSubRoutes = []
+        const files: Record<string, any> = import.meta.glob('@/router/main/**/*.ts', {
+          eager: true
+        })
+        for (const key in files) {
+          const module = files[key]
+          mainSubRoutes.push(module.default)
+        }
+
+        // 动态添加路由
+        for (const menus of this.userMenus) {
+          for (const subMenu of menus.children) {
+            const route = mainSubRoutes.find((item) => {
+              return item.path === subMenu.url
+            })
+            if (route) router.addRoute('main', route)
+          }
+        }
+
         router.push('/main')
       }
     }

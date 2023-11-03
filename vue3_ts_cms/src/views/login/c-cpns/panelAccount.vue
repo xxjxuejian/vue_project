@@ -33,7 +33,7 @@ const accountRules: FormRules = {
 function login(isRemPwd: boolean) {
   // 点击登录的时候必须验证 表单的字符是否符合要求，不符合不登录，弹出错误信息
   // 对表单组件验证
-  formEl.value?.validate((valid, fields) => {
+  formEl.value?.validate((valid) => {
     if (valid) {
       //验证通过,valid是true
       const name = account.name
