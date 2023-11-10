@@ -1,6 +1,11 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import { LOGIN_TOKEN } from '@/global/constant'
 import { localCache } from '@/utils/cache'
+// import { matchBtnfromUrl } from '@/utils/dyMapRouter'
+// import useLoginStore from '@/store/login/login'
+// import pinia from '@/store'
+
+// const loginStore = useLoginStore(pinia)
 const router = createRouter({
   history: createWebHashHistory(),
   // 路径和组件的映射关系
@@ -56,10 +61,6 @@ router.beforeEach((to) => {
     // 只要登录成功才能进入到main页面,token有值
     // 如果token没有值，说明没有登录，跳转到登录页面
     if (!token) return '/login'
-  }
-
-  if (to.path.startsWith('/main')) {
-    const userMenus = localCache.getCache('userMenus')
   }
 })
 

@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import useLoginStore from '@/store/login/login'
 import { localCache } from '@/utils/cache'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
+import { computed } from 'vue'
+import { matchBtnfromUrl } from '@/utils/dyMapRouter'
 
 const loginStore = useLoginStore()
 const userMenus = loginStore.userMenus ?? localCache.getCache('userMenus')
@@ -15,11 +17,20 @@ defineProps({
   }
 })
 
-// 侧边栏按钮点击
+// 侧边栏导航按钮点击
 function navClick(item: any) {
   console.log(item)
   router.push(item.url)
 }
+
+// 路径与左侧导航按钮之间的匹配
+// default-active="4" 的值是和el-menu-item index 的绑定的
+// 拿到当前的路由
+const curRoute = useRoute()
+const activeMenu = computed(() => {
+  const activeRoute = matchBtnfromUrl(curRoute.path, userMenus)
+  return activeRoute.id + ''
+})
 </script>
 
 <template>
@@ -30,7 +41,7 @@ function navClick(item: any) {
     </div>
     <div class="menus">
       <el-menu
-        default-active="4"
+        :default-active="activeMenu"
         class="el-menu-vertical-demo"
         text-color="#b7bdc3"
         :collapse="isFlod"

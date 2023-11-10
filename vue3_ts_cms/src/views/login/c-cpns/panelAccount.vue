@@ -74,6 +74,7 @@ defineExpose({
       ref="formEl"
       status-icon
     >
+      <!-- prop重置用的字段 -->
       <el-form-item label="账号" prop="name">
         <el-input v-model="account.name" />
       </el-form-item>

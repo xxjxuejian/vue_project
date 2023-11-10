@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import personInfo from './personInfo.vue'
+import headerCrumb from '@/components/main-content/header-crumb.vue'
+
 const emits = defineEmits(['foldChange'])
 // 记录是否折叠侧边栏
 const isFold = ref<boolean>(false)
@@ -22,7 +24,7 @@ function handleMenuIconClick() {
       </el-icon>
     </div>
     <div class="content">
-      <div class="breadcrumb">面包屑导航栏</div>
+      <headerCrumb></headerCrumb>
       <personInfo></personInfo>
     </div>
   </div>

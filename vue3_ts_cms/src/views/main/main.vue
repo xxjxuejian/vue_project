@@ -1,10 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import useLoginStore from '@/store/login/login'
 import mainAside from '@/components/main-aside/mainAside.vue'
 import mainHeader from '@/components/main-header/mainHeader.vue'
-
-const loginStore = useLoginStore()
 
 // 折叠相关操作
 const isFold = ref(false)
@@ -33,7 +30,6 @@ function handleFoldChange(flag: boolean) {
 
           <!-- 内容区域 -->
           <el-main>
-            <h2>欢迎用户{{ loginStore.name }}</h2>
             <RouterView></RouterView>
           </el-main>
         </el-container>
@@ -55,10 +51,6 @@ function handleFoldChange(flag: boolean) {
     }
     .el-aside {
       transition: width 0.3s ease-out;
-    }
-
-    .el-main {
-      background-color: skyblue;
     }
   }
 }

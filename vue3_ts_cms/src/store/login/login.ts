@@ -4,6 +4,7 @@ import { LOGIN_TOKEN } from '@/global/constant'
 import { localCache } from '@/utils/cache'
 import router from '@/router'
 import { defineStore } from 'pinia'
+import { mapRouter } from '@/utils/dyMapRouter'
 
 // 定义state的类型
 interface ILoginState {
@@ -11,17 +12,20 @@ interface ILoginState {
   token: string
   userInfo: any
   userMenus: any
+  activeMenu: string
 }
 
 // 给state中的返回的变量添加类型的方法
 const useLoginStore = defineStore('login', {
   state: (): ILoginState => ({
-    name: localCache.getCache('name') ?? '',
-    token: localCache.getCache(LOGIN_TOKEN) ?? ' ',
-    userInfo: localCache.getCache('userInfo') ?? {},
-    userMenus: localCache.getCache('userMenus') ?? []
+    name: '',
+    token: '',
+    userInfo: {},
+    userMenus: [],
+    activeMenu: ''
   }),
   actions: {
+    // 登录的时候做的一些操作
     async loginAccountAction(account: { name: string; password: string }) {
       const res = await accountLoginRequest(account)
       const id = res.data.id
@@ -53,26 +57,28 @@ const useLoginStore = defineStore('login', {
 
         // 根据用户菜单树信息，动态的注册路由
         // 1.获取所有的注册好的路由信息
-        const mainSubRoutes = []
-        const files: Record<string, any> = import.meta.glob('@/router/main/**/*.ts', {
-          eager: true
+        // 2.动态添加路由
+        const routes = mapRouter(this.userMenus)
+        routes.forEach((item) => {
+          router.addRoute('main', item)
         })
-        for (const key in files) {
-          const module = files[key]
-          mainSubRoutes.push(module.default)
-        }
-
-        // 动态添加路由
-        for (const menus of this.userMenus) {
-          for (const subMenu of menus.children) {
-            const route = mainSubRoutes.find((item) => {
-              return item.path === subMenu.url
-            })
-            if (route) router.addRoute('main', route)
-          }
-        }
 
         router.push('/main')
+      }
+    },
+    // 页面刷新的时候做的一些操作
+    loadLocalCacheAction() {
+      this.token = localCache.getCache(LOGIN_TOKEN)
+      this.name = localCache.getCache('name')
+      this.userInfo = localCache.getCache('userInfo')
+      this.userMenus = localCache.getCache('userMenus')
+      if (this.token) {
+        const routes = mapRouter(this.userMenus)
+        routes.forEach((item) => {
+          router.addRoute('main', item)
+        })
+      } else {
+        router.push('/login')
       }
     }
   }
