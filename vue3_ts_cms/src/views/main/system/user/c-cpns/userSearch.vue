@@ -15,17 +15,17 @@ const searchForm: searchFormType = reactive({
   realname: '',
   cellphone: '',
   enable: 1,
-  createAt: []
+  createAt: ''
 })
 
 // 重置操作,直接拿到整个表单元素
 const formRef = ref<InstanceType<typeof ElForm>>()
-function handleResetClick() {
-  formRef.value?.resetFields()
+const emits = defineEmits(['resetClick', 'queryClick'])
+function resetClick() {
+  emits('resetClick', searchForm)
 }
-
-function handleQueryClick() {
-  console.log('handleQueryClick')
+function queryClick() {
+  emits('queryClick', searchForm)
 }
 </script>
 
@@ -77,8 +77,8 @@ function handleQueryClick() {
 
     <!-- 2.重置和搜索的按钮 -->
     <div class="btns">
-      <el-button icon="Refresh" @click="handleResetClick">重置</el-button>
-      <el-button icon="Search" type="primary" @click="handleQueryClick">查询</el-button>
+      <el-button icon="Refresh" @click="resetClick">重置</el-button>
+      <el-button icon="Search" type="primary" @click="queryClick">查询</el-button>
     </div>
   </div>
 </template>

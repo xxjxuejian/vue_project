@@ -5,6 +5,7 @@ import { localCache } from '@/utils/cache'
 import router from '@/router'
 import { defineStore } from 'pinia'
 import { mapRouter } from '@/utils/dyMapRouter'
+import useSystemStore from '../system/system'
 
 // 定义state的类型
 interface ILoginState {
@@ -55,6 +56,11 @@ const useLoginStore = defineStore('login', {
         localCache.setCache('userMenus', this.userMenus)
         console.log('用户菜单树', this.userMenus)
 
+        // 顺便获取所有的角色列表，部门列表
+        const systemStore = useSystemStore()
+        systemStore.fetchEntireRolesAction()
+        systemStore.fetchEntireDepartmentsAction()
+
         // 根据用户菜单树信息，动态的注册路由
         // 1.获取所有的注册好的路由信息
         // 2.动态添加路由
@@ -73,6 +79,11 @@ const useLoginStore = defineStore('login', {
       this.userInfo = localCache.getCache('userInfo')
       this.userMenus = localCache.getCache('userMenus')
       if (this.token) {
+        // 页面刷新也需要重新获取一次角色/部门列表
+        const systemStore = useSystemStore()
+        systemStore.fetchEntireRolesAction()
+        systemStore.fetchEntireDepartmentsAction()
+
         const routes = mapRouter(this.userMenus)
         routes.forEach((item) => {
           router.addRoute('main', item)

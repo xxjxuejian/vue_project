@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import useSystemStore from '@/store/system/system'
 import { storeToRefs } from 'pinia'
-
 import { ref } from 'vue'
 import formatUTC from '@/utils/format'
 
+// 分页操作
 const systemStore = useSystemStore()
 const { usersList, usersTotalCount } = storeToRefs(systemStore)
 const currentPage = ref(1)
@@ -20,19 +20,51 @@ function handleCurrentChange() {
   loadNewData()
 }
 
-function loadNewData() {
-  systemStore.postUsersListAction({
+function loadNewData(queryData = {}) {
+  const queryInfo = {
     size: pageSize.value,
-    offset: (currentPage.value - 1) * pageSize.value
-  })
+    offset: (currentPage.value - 1) * pageSize.value,
+    ...queryData
+  }
+  systemStore.postUsersListAction(queryInfo)
 }
+
+// 编辑和删除操作
+const deleteDiaVisible = ref(false)
+const deleteId = ref(null)
+
+const deleteBtnClick = (id: any) => {
+  deleteDiaVisible.value = true
+  deleteId.value = id
+}
+function handleConfirmDeleteClick() {
+  deleteDiaVisible.value = false
+  if (deleteId.value) {
+    systemStore.deleteUserByIdAction(deleteId.value)
+    // 删除完重新请求一次数据
+    loadNewData()
+  }
+}
+
+// 定义编辑事件和删除事件，统一传递给父组件
+const emits = defineEmits(['newUserBtnClick', 'editUserBtnClick'])
+const handleNewBtnClick = () => {
+  emits('newUserBtnClick')
+}
+const handleEditBtnClick = (itemData: any) => {
+  emits('editUserBtnClick', itemData)
+}
+
+defineExpose({
+  loadNewData
+})
 </script>
 
 <template>
   <div class="content">
     <div class="header">
       <h3 class="title">用户列表</h3>
-      <el-button type="primary">新建用户</el-button>
+      <el-button type="primary" @click="handleNewBtnClick">新建用户</el-button>
     </div>
     <div class="table">
       <el-table :data="usersList" border style="width: 100%">
@@ -62,8 +94,26 @@ function loadNewData() {
         </el-table-column>
 
         <el-table-column align="center" label="操作" width="140px">
-          <el-button size="small" icon="Edit" type="primary" text> 编辑 </el-button>
-          <el-button size="small" icon="Delete" type="danger" text> 删除 </el-button>
+          <template #default="scope">
+            <el-button
+              size="small"
+              icon="Edit"
+              type="primary"
+              text
+              @click="handleEditBtnClick(scope.row)"
+            >
+              编辑
+            </el-button>
+            <el-button
+              size="small"
+              icon="Delete"
+              type="danger"
+              text
+              @click="deleteBtnClick(scope.row.id)"
+            >
+              删除
+            </el-button>
+          </template>
         </el-table-column>
       </el-table>
     </div>
@@ -77,6 +127,17 @@ function loadNewData() {
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
       />
+    </div>
+    <div class="deleteDialog">
+      <el-dialog v-model="deleteDiaVisible" title="Warning" width="30%" center>
+        <span> 确认删除？ </span>
+        <template #footer>
+          <span class="dialog-footer">
+            <el-button @click="deleteDiaVisible = false">取消</el-button>
+            <el-button type="primary" @click="handleConfirmDeleteClick">确认</el-button>
+          </span>
+        </template>
+      </el-dialog>
     </div>
   </div>
 </template>
