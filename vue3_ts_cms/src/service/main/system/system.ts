@@ -40,3 +40,12 @@ export function editUserData(id: number, userInfo: any) {
     data: userInfo
   })
 }
+
+// 一个更加通用的请求函数,参数传递，指定请求哪一个页面的数据
+// 前提是后端的接口是/users/list, /department/list .....等形式
+export function postPageListData(pageName: string, queryInfo: any) {
+  return hyRequest.post({
+    url: `/${pageName}/list`,
+    data: queryInfo
+  })
+}

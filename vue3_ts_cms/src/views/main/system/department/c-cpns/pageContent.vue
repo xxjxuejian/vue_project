@@ -6,7 +6,8 @@ import formatUTC from '@/utils/format'
 
 // 分页操作
 const systemStore = useSystemStore()
-const { usersList, usersTotalCount } = storeToRefs(systemStore)
+systemStore.postPageListDataAction('department')
+const { departmentsList, departmentsTotalCount } = storeToRefs(systemStore)
 const currentPage = ref(1)
 const pageSize = ref(10)
 // 发送网络请求，获取用户列表数据
@@ -40,10 +41,9 @@ const deleteBtnClick = (id: any) => {
 function handleConfirmDeleteClick() {
   deleteDiaVisible.value = false
   if (deleteId.value) {
-    systemStore.deleteUserByIdAction(deleteId.value).then(() => {
-      // 删除完重新请求一次数据
-      loadNewData()
-    })
+    systemStore.deleteUserByIdAction(deleteId.value)
+    // 删除完重新请求一次数据
+    loadNewData()
   }
 }
 
@@ -64,24 +64,17 @@ defineExpose({
 <template>
   <div class="content">
     <div class="header">
-      <h3 class="title">用户列表</h3>
-      <el-button type="primary" @click="handleNewBtnClick">新建用户</el-button>
+      <h3 class="title">部门列表</h3>
+      <el-button type="primary" @click="handleNewBtnClick">新建部门</el-button>
     </div>
     <div class="table">
-      <el-table :data="usersList" border style="width: 100%">
+      <el-table :data="departmentsList" border style="width: 100%">
         <el-table-column align="center" type="selection" width="50px" />
         <el-table-column align="center" type="index" label="序号" width="60px" />
 
-        <el-table-column align="center" label="用户名" prop="name" width="100px" />
-        <el-table-column align="center" label="真实姓名" prop="realname" width="100px" />
-        <el-table-column align="center" label="手机号码" prop="cellphone" width="120px" />
-        <el-table-column align="center" label="状态" prop="enable" width="90px">
-          <template #default="scope">
-            <el-button size="small" :type="scope.row.enable ? 'primary' : 'danger'" plain>
-              {{ scope.row.enable ? '启用' : '禁用' }}
-            </el-button>
-          </template>
-        </el-table-column>
+        <el-table-column align="center" label="部门名称" prop="name" width="100px" />
+        <el-table-column align="center" label="部门领导" prop="leader" width="100px" />
+        <el-table-column align="center" label="上级领导" prop="parentId" width="120px" />
         <el-table-column align="center" label="创建时间" prop="createAt">
           <template #default="scope">
             {{ formatUTC(scope.row.createAt) }}
@@ -124,7 +117,7 @@ defineExpose({
         v-model:page-size="pageSize"
         :page-sizes="[10, 20, 30]"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="usersTotalCount"
+        :total="departmentsTotalCount"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
       />

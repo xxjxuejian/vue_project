@@ -5,7 +5,8 @@ import {
   getEntireRoles,
   getEntireDepartments,
   newUserData,
-  editUserData
+  editUserData,
+  postPageListData
 } from '@/service/main/system/system'
 import type { ISystemState } from './types'
 
@@ -14,7 +15,9 @@ const useSystemStore = defineStore('system', {
     usersList: [],
     usersTotalCount: 0,
     entireRoles: [],
-    entireDepartments: []
+    entireDepartments: [],
+    departmentsList: [],
+    departmentsTotalCount: 0
   }),
   actions: {
     // 获取用户列表的网络请求
@@ -23,6 +26,7 @@ const useSystemStore = defineStore('system', {
       const { list, totalCount } = userListResult.data
       this.usersList = list
       this.usersTotalCount = totalCount
+      console.log('重新请求了')
     },
     // 删除指定用户的请求
     async deleteUserByIdAction(id: number) {
@@ -50,6 +54,14 @@ const useSystemStore = defineStore('system', {
     async editUserDataAction(id: number, userInfo: any) {
       const editResult = await editUserData(id, userInfo)
       console.log(editResult)
+    },
+
+    // 单纯的请求页面数据的方法
+    async postPageListDataAction(pageName: string, queryInfo = { offset: 0, size: 10 }) {
+      const postResult = await postPageListData(pageName, queryInfo)
+      const { list, totalCount } = postResult.data
+      this.departmentsList = list
+      this.departmentsTotalCount = totalCount
     }
   }
 })

@@ -49,12 +49,17 @@ function handleConfirmClick() {
   dialogVisible.value = false
   if (!isCreateUser.value && editData.value) {
     // 编辑用户的数据
-    systemStore.editUserDataAction(editData.value.id, formData)
+    systemStore.editUserDataAction(editData.value.id, formData).then(() => {
+      systemStore.postUsersListAction()
+    })
+    console.log('编辑了用户')
   } else {
     // 创建新的用户
-    systemStore.newUserDataAction(formData)
+    systemStore.newUserDataAction(formData).then(() => {
+      systemStore.postUsersListAction()
+    })
+    console.log('新建了用户')
   }
-  systemStore.postUsersListAction()
 }
 
 defineExpose({
