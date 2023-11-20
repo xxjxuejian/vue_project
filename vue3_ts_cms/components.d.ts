@@ -41,6 +41,7 @@ declare module 'vue' {
     HeaderCrumb: typeof import('./src/components/main-content/header-crumb.vue')['default']
     MainAside: typeof import('./src/components/main-aside/mainAside.vue')['default']
     MainHeader: typeof import('./src/components/main-header/mainHeader.vue')['default']
+    PageSearch: typeof import('./src/components/page-search/pageSearch.vue')['default']
     PersonInfo: typeof import('./src/components/main-header/personInfo.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

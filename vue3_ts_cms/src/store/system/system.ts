@@ -6,7 +6,10 @@ import {
   getEntireDepartments,
   newUserData,
   editUserData,
-  postPageListData
+  postPageListData,
+  deletePageDataById,
+  createPageData,
+  editPageData
 } from '@/service/main/system/system'
 import type { ISystemState } from './types'
 
@@ -62,6 +65,22 @@ const useSystemStore = defineStore('system', {
       const { list, totalCount } = postResult.data
       this.departmentsList = list
       this.departmentsTotalCount = totalCount
+    },
+
+    // 单纯的删除某一个页面的某条数据的方法
+    async deletePageDataByIdAction(pageName: string, deleteId: number) {
+      const deleteResult = await deletePageDataById(pageName, deleteId)
+      console.log(deleteResult)
+    },
+
+    async createPageDataAction(pageName: string, DataInfo: any) {
+      const createResult = await createPageData(pageName, DataInfo)
+      console.log(createResult)
+    },
+
+    async editPageDataByIdAction(pageName: string, DataInfo: any, editId: number) {
+      const editResult = await editPageData(pageName, DataInfo, editId)
+      console.log(editResult)
     }
   }
 })

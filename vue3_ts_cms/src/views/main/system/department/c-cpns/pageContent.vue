@@ -41,19 +41,20 @@ const deleteBtnClick = (id: any) => {
 function handleConfirmDeleteClick() {
   deleteDiaVisible.value = false
   if (deleteId.value) {
-    systemStore.deleteUserByIdAction(deleteId.value)
+    // systemStore.deleteUserByIdAction(deleteId.value)
+    systemStore.deletePageDataByIdAction('department', deleteId.value)
     // 删除完重新请求一次数据
-    loadNewData()
+    systemStore.postPageListDataAction('department')
   }
 }
 
 // 定义编辑事件和删除事件，统一传递给父组件
-const emits = defineEmits(['newUserBtnClick', 'editUserBtnClick'])
+const emits = defineEmits(['newEventBtnClick', 'editEventBtnClick'])
 const handleNewBtnClick = () => {
-  emits('newUserBtnClick')
+  emits('newEventBtnClick')
 }
 const handleEditBtnClick = (itemData: any) => {
-  emits('editUserBtnClick', itemData)
+  emits('editEventBtnClick', itemData)
 }
 
 defineExpose({

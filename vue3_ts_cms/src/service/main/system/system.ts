@@ -49,3 +49,26 @@ export function postPageListData(pageName: string, queryInfo: any) {
     data: queryInfo
   })
 }
+
+// 删除某个页面的操作
+export function deletePageDataById(pageName: string, deleteId: number) {
+  return hyRequest.delete({
+    url: `/${pageName}/${deleteId}`
+  })
+}
+
+// 给某一个页面添加一条数据的操作
+export function createPageData(pageName: string, DataInfo: any) {
+  return hyRequest.post({
+    url: `/${pageName}`,
+    data: DataInfo
+  })
+}
+
+// 给某一个页面编辑数据得操作
+export function editPageData(pageName: string, DataInfo: any, eidtId: number) {
+  return hyRequest.patch({
+    url: `/${pageName}/${eidtId}`,
+    data: DataInfo
+  })
+}
